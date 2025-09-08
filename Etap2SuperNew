@@ -17,6 +17,8 @@ tar -xzf /var/db/postgres4/backups/pg_wal.tar.gz -C /var/db/postgres4/ykk83/pg_w
 # 5. Развернем tablespace (если был) (ТУТ СМОТРИ СОВИ НАЗВАНИЯ)
 mkdir -p /var/db/postgres4/twv39/
 tar -xzf /var/db/postgres4/backups/16387.tar.gz -C /var/db/postgres4/twv39/
+#Тут скорее всего придется удалить неправильную символическую ссылку, посмотреть корректность ссылки с помощью ls -l /var/db/postgres4/ykk83/pg_tblspc/
+#rm -f /var/db/postgres4/ykk83/pg_tblspc/16387
 ln -s /var/db/postgres4/twv39 /var/db/postgres4/ykk83/pg_tblspc/16387
 
 # 6. Настроим восстановление
@@ -28,4 +30,5 @@ touch /var/db/postgres4/ykk83/recovery.signal
 # 8. Запустим PostgreSQL
 pg_ctl -D /var/db/postgres4/ykk83 start
 # 8. Проверим работу
-psql -h localhost  -p 9426 -U new_role -d postgres
+psql -h localhost  -p 9426 -U new_role -d lazywhitewood;
+
