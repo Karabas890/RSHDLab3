@@ -1,7 +1,9 @@
 PGDATA=$HOME/ykk83
 export PGDATA
-pg_ctl -D /var/db/postgres4/ykk83 start
+
+pg_ctl -D "$HOME/ykk83_recovered" -l "$HOME/ykk83_recovered/logfile" start
 pg_ctl -D "$PGDATA" stop
+pg_ctl -D /var/db/postgres4/ykk83 stop
 pg_ctl -D /var/db/postgres2/ykk83_recovered stop
 pg_ctl -D "$PGDATA" stop -m fast
 pg_ctl -D "$PGDATA" restart -l "$PGDATA/logfile"
@@ -12,3 +14,10 @@ psql -p 9426 -U postgres2 -d postgres
 ALTER USER postgres2 WITH PASSWORD 'CqvGNIsy';
 psql -h 127.0.0.1 -p 9426 -U postgres2 -d postgres
 psql -h pg121 -p 9426 -U postgres2 -d postgres
+bash /var/db/postgres2/pg_backup.sh
+rm -rf ./*
+tail -n 30 $HOME/ykk83/log/postgresql-Mon.csv
+ls -l /var/db/postgres4/ykk83/pg_tblspc/
+
+#
+rm -f /var/db/postgres4/ykk83/pg_tblspc/16388

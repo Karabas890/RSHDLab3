@@ -14,10 +14,10 @@ tar -xzf /var/db/postgres4/backups/base.tar.gz -C /var/db/postgres4/ykk83/
 mkdir -p /var/db/postgres4/ykk83/pg_wal
 tar -xzf /var/db/postgres4/backups/pg_wal.tar.gz -C /var/db/postgres4/ykk83/pg_wal/
 
-# 5. Развернем tablespace (если был)
+# 5. Развернем tablespace (если был) (ТУТ СМОТРИ СОВИ НАЗВАНИЯ)
 mkdir -p /var/db/postgres4/twv39/
-tar -xzf /var/db/postgres4/backups/16388.tar.gz -C /var/db/postgres4/twv39/
-ln -s /var/db/postgres4/twv39 /var/db/postgres4/ykk83/pg_tblspc/16388
+tar -xzf /var/db/postgres4/backups/16387.tar.gz -C /var/db/postgres4/twv39/
+ln -s /var/db/postgres4/twv39 /var/db/postgres4/ykk83/pg_tblspc/16387
 
 # 6. Настроим восстановление
 echo "restore_command = 'cp /var/db/postgres4/wal_archive/%f %p'" >> /var/db/postgres4/ykk83/postgresql.conf

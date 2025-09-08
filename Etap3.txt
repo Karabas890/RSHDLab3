@@ -23,8 +23,8 @@ scp postgres4@pg111:/var/db/postgres4/backups/base.tar.gz $HOME/
 # Скопировать pg_wal.tar.gz
 scp postgres4@pg111:/var/db/postgres4/backups/pg_wal.tar.gz $HOME/
 
-# Скопировать tablespace (16388.tar.gz)
-scp postgres4@pg111:/var/db/postgres4/backups/16388.tar.gz $HOME/
+# Скопировать tablespace (16388.tar.gz НО ТУТ СМОТРИ СВОЕ НАЗВАНИЕ)
+scp postgres4@pg111:/var/db/postgres4/backups/16387.tar.gz $HOME/
 
 # Развернём базовый кластер
 tar -xzf $HOME/base.tar.gz -C $HOME/ykk83_recovered
@@ -33,9 +33,9 @@ tar -xzf $HOME/base.tar.gz -C $HOME/ykk83_recovered
 mkdir -p $HOME/ykk83_recovered/pg_wal
 tar -xzf $HOME/pg_wal.tar.gz -C $HOME/ykk83_recovered/pg_wal/
 
-# Развернём tablespace
-tar -xzf $HOME/16388.tar.gz -C $HOME/twv39_recovered
-ln -s $HOME/twv39_recovered $HOME/ykk83_recovered/pg_tblspc/16388
+# Развернём tablespace (ТУТ ТОЖЕ СМОТРИ СВОЕ НАЗВАНИЕ)
+tar -xzf $HOME/16387.tar.gz -C $HOME/twv39_recovered
+ln -s $HOME/twv39_recovered $HOME/ykk83_recovered/pg_tblspc/16387
 
 # Настроим конфигурацию
 echo "restore_command = 'cp /var/db/postgres2/wal_archive/%f %p'" >> $HOME/ykk83_recovered/postgresql.conf
