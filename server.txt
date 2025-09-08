@@ -1,0 +1,13 @@
+PGDATA=$HOME/ykk83
+export PGDATA
+pg_ctl -D /var/db/postgres4/ykk83 start
+pg_ctl -D "$PGDATA" stop
+pg_ctl -D "$PGDATA" stop -m fast
+pg_ctl -D "$PGDATA" restart -l "$PGDATA/logfile"
+pg_ctl reload -D "$PGDATA"
+
+
+psql -p 9426 -U postgres2 -d postgres
+ALTER USER postgres2 WITH PASSWORD 'CqvGNIsy';
+psql -h 127.0.0.1 -p 9426 -U postgres2 -d postgres
+psql -h pg121 -p 9426 -U postgres2 -d postgres

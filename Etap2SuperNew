@@ -1,0 +1,31 @@
+# 1. Остановим PostgreSQL (если вдруг запущен)
+pg_ctl -D /var/db/postgres4/ykk83 stop
+
+# 2. Очистим старый кластер
+rm -rf /var/db/postgres4/ykk83/
+rm -rf /var/db/postgres4/twv39/
+mkdir -p /var/db/postgres4/ykk83
+chmod 750 /var/db/postgres4/ykk83
+
+# 3. Развернем базовый кластер
+tar -xzf /var/db/postgres4/backups/base.tar.gz -C /var/db/postgres4/ykk83/
+
+# 4. Развернем WAL
+mkdir -p /var/db/postgres4/ykk83/pg_wal
+tar -xzf /var/db/postgres4/backups/pg_wal.tar.gz -C /var/db/postgres4/ykk83/pg_wal/
+
+# 5. Развернем tablespace (если был)
+mkdir -p /var/db/postgres4/twv39/
+tar -xzf /var/db/postgres4/backups/16388.tar.gz -C /var/db/postgres4/twv39/
+ln -s /var/db/postgres4/twv39 /var/db/postgres4/ykk83/pg_tblspc/16388
+
+# 6. Настроим восстановление
+echo "restore_command = 'cp /var/db/postgres4/wal_archive/%f %p'" >> /var/db/postgres4/ykk83/postgresql.conf
+
+# 7. Создадим recovery.signal
+touch /var/db/postgres4/ykk83/recovery.signal
+
+# 8. Запустим PostgreSQL
+pg_ctl -D /var/db/postgres4/ykk83 start
+# 8. Проверим работу
+psql -h localhost  -p 9426 -U new_role -d postgres

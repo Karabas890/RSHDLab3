@@ -1,0 +1,54 @@
+# Остановим сервер (чтобы имитировать некорректное завершение работы)
+pg_ctl -D $PGDATA stop -m immediate
+# Удалим директорию WAL (qfg95 отдельный каталог)
+rm -rf $HOME/qfg95
+# Пробуем перезапустить сервер
+pg_ctl -D $PGDATA start
+# Проверим корректность работы
+pg_ctl -D $PGDATA status
+tail -n 30 $PGDATA/logfile
+# Остановим сервер (если вдруг он висит)
+pg_ctl -D $PGDATA stop -m immediate
+
+# Создадим новые каталоги для восстановления
+rm -rf $HOME/ykk83_recovered $HOME/qfg95_recovered $HOME/twv39_recovered
+mkdir -p $HOME/ykk83_recovered
+mkdir -p $HOME/qfg95_recovered
+mkdir -p $HOME/twv39_recovered
+chmod 700 $HOME/ykk83_recovered $HOME/qfg95_recovered $HOME/twv39_recovered
+# Скопируем последнюю резервную копию с резервного узла
+# Скопировать base.tar.gz
+scp postgres4@pg111:/var/db/postgres4/backups/base.tar.gz $HOME/
+
+# Скопировать pg_wal.tar.gz
+scp postgres4@pg111:/var/db/postgres4/backups/pg_wal.tar.gz $HOME/
+
+# Скопировать tablespace (16388.tar.gz)
+scp postgres4@pg111:/var/db/postgres4/backups/16388.tar.gz $HOME/
+
+# Развернём базовый кластер
+tar -xzf $HOME/base.tar.gz -C $HOME/ykk83_recovered
+
+# Развернём WAL
+mkdir -p $HOME/ykk83_recovered/pg_wal
+tar -xzf $HOME/pg_wal.tar.gz -C $HOME/ykk83_recovered/pg_wal/
+
+# Развернём tablespace
+tar -xzf $HOME/16388.tar.gz -C $HOME/twv39_recovered
+ln -s $HOME/twv39_recovered $HOME/ykk83_recovered/pg_tblspc/16388
+
+# Настроим конфигурацию
+echo "restore_command = 'cp /var/db/postgres2/wal_archive/%f %p'" >> $HOME/ykk83_recovered/postgresql.conf
+#echo "port = 9426" >> $HOME/ykk83_recovered/postgresql.conf
+#echo "listen_addresses = '*'" >> $HOME/ykk83_recovered/postgresql.conf
+
+#Создаём recovery.signal
+touch $HOME/ykk83_recovered/recovery.signal
+
+#Запускаем сервер из новой директории
+pg_ctl -D $HOME/ykk83_recovered -l $HOME/ykk83_recovered/logfile start
+
+#Проверяем доступность
+psql -p 9426 -U postgres2 -d postgres
+
+
