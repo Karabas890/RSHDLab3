@@ -1,3 +1,7 @@
+ssh -J s368527@helios.cs.ifmo.ru:2222 postgres2@pg121
+CqvGNIsy
+ssh -J s368527@helios.cs.ifmo.ru:2222 postgres4@pg111
+o05CgTYI
 #!/bin/bash
 
 # Основные директории

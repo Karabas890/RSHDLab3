@@ -2,6 +2,7 @@ PGDATA=$HOME/ykk83
 export PGDATA
 pg_ctl -D /var/db/postgres4/ykk83 start
 pg_ctl -D "$PGDATA" stop
+pg_ctl -D /var/db/postgres2/ykk83_recovered stop
 pg_ctl -D "$PGDATA" stop -m fast
 pg_ctl -D "$PGDATA" restart -l "$PGDATA/logfile"
 pg_ctl reload -D "$PGDATA"
