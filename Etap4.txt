@@ -21,9 +21,10 @@ pg_dump -h localhost -p 9426 -U new_role -d lazywhitewood -Fc -f /var/db/postgre
 BACKUP_NAME=$(ssh postgres4@pg111 "ls -1t /var/db/postgres4/save_dump/*.dump | head -n1 | xargs -n1 basename")
 rsync -avz postgres4@pg111:/var/db/postgres4/save_dump/$BACKUP_NAME /var/db/postgres2/save_dump/
 #Подключаемся к основной базе (где «сломаем» данные):
-psql -h localhost -p 9426 -U new_role -d lazywhitewood
+psql -p 9426 -U postgres2 -d lazywhitewood
 #Пример «логической ошибки» — перезаписываем строки
 UPDATE test_table_lw SET value = 0 WHERE name IN ('Z','Y','X');
+select * from test_table_lw;
 #Восстанавливаем данные из дампа
 pg_restore -p 9426 -U postgres2 -d lazywhitewood -c -v /var/db/postgres2/save_dump/$BACKUP_NAME
 #Подключаемся к базе для проверки
